@@ -287,6 +287,8 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Dtos\CustomerDto.cs" />
+    <Compile Include="Models\Dtos\GenreDto.cs" />
+    <Compile Include="Models\Dtos\MembershipTypeDto.cs" />
     <Compile Include="Models\Dtos\MovieDto.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\IdentityModels.cs" />

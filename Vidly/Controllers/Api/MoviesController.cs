@@ -7,7 +7,7 @@ using System.Web.Http;
 using AutoMapper;
 using Vidly.Models;
 using Vidly.Models.Dtos;
-
+using System.Data.Entity;
 namespace Vidly.Controllers.Api
 {
     public class MoviesController : ApiController
@@ -24,7 +24,7 @@ namespace Vidly.Controllers.Api
         [HttpGet]
         public IHttpActionResult GetMovies()
         {
-            var movieDtos = _context.Movies.ToList().Select(Mapper.Map<Movie, MovieDto>);
+            var movieDtos = _context.Movies.Include(m=>m.Genre).ToList().Select(Mapper.Map<Movie, MovieDto>);
             return Ok(movieDtos);
         }
 
@@ -32,7 +32,7 @@ namespace Vidly.Controllers.Api
         [HttpGet]
         public IHttpActionResult GetMovie(int id)
         {
-            var movieInDb = _context.Movies.SingleOrDefault(m => m.Id == id);
+            var movieInDb = _context.Movies.Include(m => m.Genre).SingleOrDefault(m => m.Id == id);
 
             if (movieInDb == null)
                 return NotFound();
