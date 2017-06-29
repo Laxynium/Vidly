@@ -15,8 +15,8 @@ namespace Vidly.Controllers.Api
         {
             _context = new ApplicationDbContext();
         }
-
         // GET /api/customers
+        [Authorize(Roles = RoleName.CanManageMovies)]      
         public IHttpActionResult GetCustomers()
         {
             var customerDtos = _context.Customers
@@ -27,6 +27,7 @@ namespace Vidly.Controllers.Api
         }
 
         //GET /api/customers/1
+        [Authorize(Roles = RoleName.CanManageMovies)]
         [HttpGet]
         public IHttpActionResult GetCustomer(int id)
         {
@@ -38,6 +39,7 @@ namespace Vidly.Controllers.Api
         }
 
         //POST /api/customers
+        [Authorize(Roles = RoleName.CanManageMovies)]
         [HttpPost]
         public IHttpActionResult CreateCustomer(CustomerDto customerDto)
         {
@@ -56,6 +58,7 @@ namespace Vidly.Controllers.Api
         }
 
         // PUT /api/customers
+        [Authorize(Roles = RoleName.CanManageMovies)]
         [HttpPut]
         public IHttpActionResult UpdateCustomers(int id,CustomerDto customerDto)
         {
@@ -74,6 +77,7 @@ namespace Vidly.Controllers.Api
         }
 
         //DELETE /api/customers/1
+        [Authorize(Roles = RoleName.CanManageMovies)]
         [HttpDelete]
         public IHttpActionResult DeleteCustomer(int id)
         {
