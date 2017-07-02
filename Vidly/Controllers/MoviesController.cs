@@ -14,7 +14,7 @@ namespace Vidly.Controllers
 
         public MoviesController()
         {
-                _context=new ApplicationDbContext();
+            _context=new ApplicationDbContext();
         }
 
         protected override void Dispose(bool disposing)
@@ -92,6 +92,7 @@ namespace Vidly.Controllers
                 movieInDb.Genre = movie.Genre;
                 movieInDb.Name = movie.Name;
                 movieInDb.NumberInStock = movie.NumberInStock;
+                movieInDb.AvailableMovies = movie.AvailableMovies;
                 movieInDb.ReleaseDate = movie.ReleaseDate;
             }
 

@@ -32,9 +32,7 @@ namespace Vidly.ViewModels
         [Required]
         public int? NumberInStock { get; set; }
 
-
-
-        public string Title=> Id !=0 ? "Edit Movie" : "New Movie";
+        public string Title=> Id !=0 ? "Edit Movie" : "Add Movie";
 
         public MovieFormViewModel()
         {

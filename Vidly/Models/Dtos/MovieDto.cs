@@ -26,6 +26,8 @@ namespace Vidly.Models.Dtos
         [Range(1, 20)]
         public int NumberInStock { get; set; }
 
+        public int AvailableMovies { get; set; }
+
 
     }
 }
