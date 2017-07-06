@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
-namespace Vidly.Models
+namespace Vidly.Domain.Entities
 {
     public class Min18YearsIfAMember:ValidationAttribute
     {

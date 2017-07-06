@@ -3,31 +3,25 @@ using System.Linq;
 using System.Web.Http;
 using AutoMapper;
 using Vidly.Models;
-using Vidly.Models.Dtos;
 using System.Data.Entity;
+using Vidly.Domain.Abstract;
+using Vidly.Domain.Entities;
+using Vidly.Infrastructure.Dtos;
+
 namespace Vidly.Controllers.Api
 {
     public class CustomersController : ApiController
     {
-        private ApplicationDbContext _context;
-
-        public CustomersController()
+        private readonly ICustomerRepository _customerRepository;
+        public CustomersController(ICustomerRepository customerRepository)
         {
-            _context = new ApplicationDbContext();
+            _customerRepository = customerRepository;
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            _context.Dispose();
-        }
-
         // GET /api/customers
-        [Authorize(Roles = RoleName.CanManageMovies)]      
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public IHttpActionResult GetCustomers(string query=null)
         {
-            var customersQuery = _context
-                .Customers
-                .Include(c=>c.MembershipType);
+            var customersQuery = _customerRepository.GetCustomers();
 
             if (!String.IsNullOrWhiteSpace(query))
                 customersQuery = customersQuery.Where(c => c.Name.Contains(query));
@@ -44,7 +38,7 @@ namespace Vidly.Controllers.Api
         [HttpGet]
         public IHttpActionResult GetCustomer(int id)
         {
-            var customer = _context.Customers.Include(c=>c.MembershipType).SingleOrDefault(c => c.Id == id);
+            var customer = _customerRepository.GetCustomer(id);
             if (customer == null)
                 return NotFound();
 
@@ -61,8 +55,11 @@ namespace Vidly.Controllers.Api
 
             var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
 
-            _context.Customers.Add(customer);
-            _context.SaveChanges();
+            //To be sure that client didnt assign value to them
+            customer.Id = 0;
+            customer.MembershipType = null;
+
+            _customerRepository.AddCustomer(customer);
 
             customerDto.Id = customer.Id;
 
@@ -78,14 +75,15 @@ namespace Vidly.Controllers.Api
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
+            var customerInDb = _customerRepository.GetCustomer(id);
 
             if (customerInDb == null)
                 return NotFound();
 
             Mapper.Map(customerDto, customerInDb);
+            
+            _customerRepository.UpdateCustomer(customerInDb);
 
-            _context.SaveChanges();
             return Ok();
         }
 
@@ -94,13 +92,10 @@ namespace Vidly.Controllers.Api
         [HttpDelete]
         public IHttpActionResult DeleteCustomer(int id)
         {
-            var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
-
+            var customerInDb = _customerRepository.GetCustomer(id);
             if (customerInDb == null)
                 return NotFound();
-
-            _context.Customers.Remove(customerInDb);
-            _context.SaveChanges();
+            _customerRepository.RemoveCustomer(id);
             return Ok();
         }
 

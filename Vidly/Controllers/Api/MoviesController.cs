@@ -6,8 +6,10 @@ using System.Net.Http;
 using System.Web.Http;
 using AutoMapper;
 using Vidly.Models;
-using Vidly.Models.Dtos;
 using System.Data.Entity;
+using Vidly.Domain.Entities;
+using Vidly.Infrastructure.Dtos;
+
 namespace Vidly.Controllers.Api
 {
     public class MoviesController : ApiController

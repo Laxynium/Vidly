@@ -7,8 +7,9 @@ using System.Threading;
 using System.Web;
 using System.Web.Http;
 using AutoMapper;
+using Vidly.Domain.Entities;
+using Vidly.Infrastructure.Dtos;
 using Vidly.Models;
-using Vidly.Models.Dtos;
 
 namespace Vidly.Controllers.Api
 {

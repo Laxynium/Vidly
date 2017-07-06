@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using Microsoft.Owin.Security.Provider;
+using Vidly.Domain.Entities;
 using Vidly.Models;
 
 namespace Vidly.ViewModels

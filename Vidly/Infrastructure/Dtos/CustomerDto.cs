@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Vidly.Models.Dtos
+namespace Vidly.Infrastructure.Dtos
 {
     public class CustomerDto
     {

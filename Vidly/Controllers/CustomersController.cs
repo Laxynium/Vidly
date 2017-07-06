@@ -1,25 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
+using Vidly.Domain.Abstract;
+using Vidly.Domain.Entities;
 using Vidly.Models;
 using Vidly.ViewModels;
 
 namespace Vidly.Controllers
-{
-
+{  
     public class CustomersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IMembershipTypeRepository _membershipTypeRepository;
 
-        public CustomersController()
+        public CustomersController(ICustomerRepository customerRepository
+            ,IMembershipTypeRepository membershipTypeRepository)
         {
-            _context=new ApplicationDbContext();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _context.Dispose();
+            _customerRepository = customerRepository;
+            _membershipTypeRepository = membershipTypeRepository;
         }
 
         [Authorize(Roles = RoleName.CanManageMovies)]
@@ -30,7 +31,7 @@ namespace Vidly.Controllers
         [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult Details(int id = 1)
         {
-            var customer =_context.Customers.Include(c=>c.MembershipType).SingleOrDefault(c => c.Id == id);
+            var customer=_customerRepository.GetCustomer(id);   
             if (customer == null)
                 return HttpNotFound();
 
@@ -40,11 +41,10 @@ namespace Vidly.Controllers
         [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult New()
         {
-            var membershipTypes = _context.MembershipTypes.ToList();
             var viewModel = new CustomerFormViewModel
             {
                 Customer = new Customer(),
-                MembershipTypes = membershipTypes
+                MembershipTypes = _membershipTypeRepository.GetMembershipTypes().ToList()
             };
             return View("CustomerForm", viewModel);
         }
@@ -56,28 +56,18 @@ namespace Vidly.Controllers
         {
             if (!ModelState.IsValid)
             {
-
                 var viewModel = new CustomerFormViewModel
                 {
                     Customer = customer,
-                    MembershipTypes = _context.MembershipTypes.ToList()
+                    MembershipTypes = _membershipTypeRepository.GetMembershipTypes().ToList()
                 };
                 return View("CustomerForm",viewModel);
             }
 
             if (customer.Id == 0)
-                _context.Customers.Add(customer);
+                _customerRepository.AddCustomer(customer);
             else
-            {
-                var customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
-                customerInDb.Name = customer.Name;
-                customerInDb.Birthdate = customer.Birthdate;
-                customerInDb.MembershipType = customer.MembershipType;
-                customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
-
-            }
-
-            _context.SaveChanges();
+                _customerRepository.UpdateCustomer(customer);
 
             return RedirectToAction("Index", "Customers");
         }
@@ -85,7 +75,8 @@ namespace Vidly.Controllers
         [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult Edit(int id)
         {
-            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            
+            var customer = _customerRepository.GetCustomer(id);
 
             if (customer == null)
                 return HttpNotFound();
@@ -93,7 +84,7 @@ namespace Vidly.Controllers
             var viewModel = new CustomerFormViewModel
             {
                 Customer = customer,
-                MembershipTypes = _context.MembershipTypes.ToList()
+                MembershipTypes = _membershipTypeRepository.GetMembershipTypes().ToList()
             };
 
             return View("CustomerForm", viewModel);

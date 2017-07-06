@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Vidly.Models;
 using Vidly.ViewModels;
 using System.Data.Entity;
+using Vidly.Domain.Entities;
 
 namespace Vidly.Controllers
 {
@@ -26,7 +27,7 @@ namespace Vidly.Controllers
         {
             if (User.IsInRole(RoleName.CanManageMovies))
                 return View("List");
-                return View("ReadOnlyList");
+            return View("ReadOnlyList");
         }
 
         public ActionResult Details(int id)
@@ -38,22 +39,7 @@ namespace Vidly.Controllers
 
             return View(movie);
         }
-        public ActionResult Random()
-        {
-            var movie = new Movie() { Name = "Shrek!" };
-            var customers = new List<Customer>
-            {
-                new Customer {Name = "Customer 1"},
-                new Customer {Name = "Customer 2"}
-            };
-            var viewModel = new RandomMovieViewModel
-            {
-                Movie = movie,
-                Customers = customers
-            };
 
-            return View(viewModel);
-        }
         [Authorize(Roles=RoleName.CanManageMovies)]
         public ActionResult New()
         {
