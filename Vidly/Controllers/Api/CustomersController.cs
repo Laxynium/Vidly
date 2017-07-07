@@ -19,6 +19,7 @@ namespace Vidly.Controllers.Api
         }
         // GET /api/customers
         [Authorize(Roles = RoleName.CanManageMovies)]
+        [HttpGet]
         public IHttpActionResult GetCustomers(string query=null)
         {
             var customersQuery = _customerRepository.GetCustomers();

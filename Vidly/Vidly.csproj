@@ -286,7 +286,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\Concrete\EFCustomerRepository.cs" />
-    <Compile Include="Infrastructure\Concrete\MembershipTypeRepository.cs" />
+    <Compile Include="Infrastructure\Concrete\EFMovieRepository.cs" />
+    <Compile Include="Infrastructure\Concrete\EFGenreRepository.cs" />
+    <Compile Include="Infrastructure\Concrete\EFMembershipTypeRepository.cs" />
+    <Compile Include="Infrastructure\Concrete\EFRentalRepository.cs" />
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Migrations\201706251126107_InitialModel.cs" />
     <Compile Include="Migrations\201706251126107_InitialModel.Designer.cs">
@@ -371,6 +374,30 @@
     <Compile Include="Migrations\201706291405412_AddedAvailableMoviesToMovie.cs" />
     <Compile Include="Migrations\201706291405412_AddedAvailableMoviesToMovie.Designer.cs">
       <DependentUpon>201706291405412_AddedAvailableMoviesToMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707071439217_ChangedFieldsOfRental.cs" />
+    <Compile Include="Migrations\201707071439217_ChangedFieldsOfRental.Designer.cs">
+      <DependentUpon>201707071439217_ChangedFieldsOfRental.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707071445334_M.cs" />
+    <Compile Include="Migrations\201707071445334_M.Designer.cs">
+      <DependentUpon>201707071445334_M.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707071446456_M1.cs" />
+    <Compile Include="Migrations\201707071446456_M1.Designer.cs">
+      <DependentUpon>201707071446456_M1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707071449155_AddRentals1.cs" />
+    <Compile Include="Migrations\201707071449155_AddRentals1.Designer.cs">
+      <DependentUpon>201707071449155_AddRentals1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707071451517_RemovedRentals.cs" />
+    <Compile Include="Migrations\201707071451517_RemovedRentals.Designer.cs">
+      <DependentUpon>201707071451517_RemovedRentals.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707071454385_AddedRentals.cs" />
+    <Compile Include="Migrations\201707071454385_AddedRentals.Designer.cs">
+      <DependentUpon>201707071454385_AddedRentals.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -812,6 +839,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706291405412_AddedAvailableMoviesToMovie.resx">
       <DependentUpon>201706291405412_AddedAvailableMoviesToMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707071439217_ChangedFieldsOfRental.resx">
+      <DependentUpon>201707071439217_ChangedFieldsOfRental.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707071445334_M.resx">
+      <DependentUpon>201707071445334_M.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707071446456_M1.resx">
+      <DependentUpon>201707071446456_M1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707071449155_AddRentals1.resx">
+      <DependentUpon>201707071449155_AddRentals1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707071451517_RemovedRentals.resx">
+      <DependentUpon>201707071451517_RemovedRentals.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707071454385_AddedRentals.resx">
+      <DependentUpon>201707071454385_AddedRentals.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

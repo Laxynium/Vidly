@@ -5,24 +5,21 @@ using System.Web.Mvc;
 using Vidly.Models;
 using Vidly.ViewModels;
 using System.Data.Entity;
+using Vidly.Domain.Abstract;
 using Vidly.Domain.Entities;
 
 namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMovieRepository _movieRepository;
+        private readonly IGenreRepository _genreRepository;
 
-        public MoviesController()
+        public MoviesController(IMovieRepository movieRepository,IGenreRepository genreRepository)
         {
-            _context=new ApplicationDbContext();
+            _movieRepository = movieRepository;
+            _genreRepository = genreRepository;
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            _context.Dispose();
-        }
-
         public ActionResult Index()
         {
             if (User.IsInRole(RoleName.CanManageMovies))
@@ -32,7 +29,7 @@ namespace Vidly.Controllers
 
         public ActionResult Details(int id)
         {
-            var movie = _context.Movies.Include(m => m.Genre).SingleOrDefault(m => m.Id == id);
+            var movie = _movieRepository.GetMovie(id);
 
             if (movie == null)
                 return HttpNotFound();
@@ -43,7 +40,7 @@ namespace Vidly.Controllers
         [Authorize(Roles=RoleName.CanManageMovies)]
         public ActionResult New()
         {
-            var genres = _context.Genres.ToList();
+            var genres = _genreRepository.GetGenres();
             var movie = new Movie();
             var viewModel = new MovieFormViewModel()
             {
@@ -61,8 +58,8 @@ namespace Vidly.Controllers
             {
                 var viewModel = new MovieFormViewModel(movie)
                 {
-                    Genres = _context.Genres.ToList()
-                };
+                    Genres = _genreRepository.GetGenres()
+            };
 
                 return View("MovieForm", viewModel);
             }
@@ -70,34 +67,35 @@ namespace Vidly.Controllers
             if (movie.Id == 0)
             {
                 movie.DateAdded = DateTime.Now;
-                _context.Movies.Add(movie);
+                movie.AvailableMovies = movie.NumberInStock;
+                _movieRepository.AddMovie(movie);
             }
             else
             {
-               var movieInDb= _context.Movies.Single(m => movie.Id == m.Id);
-                movieInDb.Genre = movie.Genre;
-                movieInDb.Name = movie.Name;
-                movieInDb.NumberInStock = movie.NumberInStock;
-                movieInDb.AvailableMovies = movie.AvailableMovies;
-                movieInDb.ReleaseDate = movie.ReleaseDate;
-            }
+                var movieInDb=_movieRepository.GetMovie(movie.Id);
+                var diff = movie.NumberInStock - movieInDb.NumberInStock;
+                movie.AvailableMovies = movieInDb.AvailableMovies;
+                if (diff > 0)
+                    movie.AvailableMovies += diff;
+                else if (movie.AvailableMovies > movie.NumberInStock)
+                    movie.AvailableMovies = movie.NumberInStock;
 
-            _context.SaveChanges();
-            
+                _movieRepository.UpdateMovie(movie);
+            }
 
             return RedirectToAction("Index", "Movies");
         }
 
         [Authorize(Roles = RoleName.CanManageMovies)]
-        public ActionResult Edit(int Id)
+        public ActionResult Edit(int id)
         {
-            var movie = _context.Movies.SingleOrDefault(m => m.Id == Id);
+            var movie = _movieRepository.GetMovie(id);
             if (movie == null)
                 return HttpNotFound();
 
             var viewModel = new MovieFormViewModel(movie)
             {
-                Genres = _context.Genres.ToList()
+                Genres = _genreRepository.GetGenres()
             };
             return View("MovieForm", viewModel);
         }

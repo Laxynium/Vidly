@@ -13,6 +13,7 @@ namespace Vidly.Infrastructure.Concrete
     public class EFCustomerRepository:ICustomerRepository,IDisposable
     {
         private readonly ApplicationDbContext _context;
+
         public EFCustomerRepository()
         {
             _context=new ApplicationDbContext();

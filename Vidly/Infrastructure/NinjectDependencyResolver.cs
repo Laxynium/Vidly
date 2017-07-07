@@ -33,7 +33,12 @@ namespace Vidly.Infrastructure
         void AddBindings()
         {
             _kernel.Bind<ICustomerRepository>().To<EFCustomerRepository>();
-            _kernel.Bind<IMembershipTypeRepository>().To<MembershipTypeRepository>();
+            _kernel.Bind<IMembershipTypeRepository>().To<EFMembershipTypeRepository>();
+
+            _kernel.Bind<IMovieRepository>().To<EFMovieRepository>();
+            _kernel.Bind<IGenreRepository>().To<EFGenreRepository>();
+
+            _kernel.Bind<IRentalRepository>().To<EFRentalRepository>();
         }
     }
 }

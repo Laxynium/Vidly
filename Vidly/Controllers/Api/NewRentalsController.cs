@@ -7,6 +7,7 @@ using System.Threading;
 using System.Web;
 using System.Web.Http;
 using AutoMapper;
+using Vidly.Domain.Abstract;
 using Vidly.Domain.Entities;
 using Vidly.Infrastructure.Dtos;
 using Vidly.Models;
@@ -15,45 +16,37 @@ namespace Vidly.Controllers.Api
 {
     public class NewRentalsController : ApiController
     {
-        private ApplicationDbContext _context;
-
-        public NewRentalsController()
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IMovieRepository _movieRepository;
+        private readonly IRentalRepository _rentalRepository;
+        public NewRentalsController(ICustomerRepository customerRepository, IMovieRepository movieRepository,IRentalRepository rentalRepository)
         {
-            _context=new ApplicationDbContext();
-        }
-        protected override void Dispose(bool disposing)
-        {
-            _context.Dispose();
-        }
+            _customerRepository = customerRepository;
+            _movieRepository = movieRepository;
+            _rentalRepository = rentalRepository;
 
+        }
         [HttpPost]
         public IHttpActionResult CreateNewRentals(NewRentalDto newRental)
         {
-            var customer = _context
-                .Customers.Single(c => c.Id == newRental.CustomerId);
+            var customer = _customerRepository.GetCustomer(newRental.CustomerId);
 
-            var movies = _context.Movies
-                .Where(m => newRental.MovieIds.Contains(m.Id)).ToList();
-
+            var movies=_movieRepository.GetMovies().Where(m => newRental.MovieIds.Contains(m.Id)).ToList();
             foreach (var movie in movies)
             {
-
-                if (movie.AvailableMovies == 0)
+                if(movie.AvailableMovies==0)
                     return BadRequest($"Movie{movie.Name}is not available.");
-
                 movie.AvailableMovies--;
+                _movieRepository.UpdateMovie(movie);
 
                 var rental = new Rental
                 {
-                    Customer = customer,
-                    Movie = movie,
-                    DateRented = DateTime.Now
+                    DateRented = DateTime.Now,
+                    CustomerId = customer.Id,
+                    MovieId = movie.Id
                 };
-                
-                _context.Rentals.Add(rental);
+                _rentalRepository.AddRental(rental);
             }
-                  
-            _context.SaveChanges();
 
             return Ok();
         }

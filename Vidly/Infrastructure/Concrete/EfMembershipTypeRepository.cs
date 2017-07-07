@@ -8,11 +8,11 @@ using Vidly.Models;
 
 namespace Vidly.Infrastructure.Concrete
 {
-    public class MembershipTypeRepository: IMembershipTypeRepository,IDisposable
+    public class EFMembershipTypeRepository: IMembershipTypeRepository,IDisposable
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public MembershipTypeRepository()
+        public EFMembershipTypeRepository()
         {
             _context = new ApplicationDbContext();
         }
